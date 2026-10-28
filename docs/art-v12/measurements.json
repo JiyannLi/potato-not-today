@@ -1,0 +1,141 @@
+{
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "presets": {
+    "light": {
+      "settings": {
+        "pixelSize": 2,
+        "renderScale": 0.75,
+        "colors": 4096,
+        "fog": 0.008,
+        "brightness": 1,
+        "saturation": 0.78,
+        "density": 65,
+        "pixelated": true,
+        "animated": false
+      },
+      "metrics": {
+        "fps": 0,
+        "frameMs": 0,
+        "calls": 0,
+        "triangles": 0
+      },
+      "grass": 55656,
+      "leaves": 6120,
+      "flowers": 658,
+      "camera": [
+        10,
+        20,
+        22
+      ],
+      "resolution": [
+        540,
+        375
+      ]
+    },
+    "medium": {
+      "settings": {
+        "pixelSize": 2,
+        "renderScale": 0.75,
+        "colors": 4096,
+        "fog": 0.018,
+        "brightness": 1,
+        "saturation": 0.78,
+        "density": 65,
+        "pixelated": true,
+        "animated": false
+      },
+      "metrics": {
+        "fps": 0,
+        "frameMs": 0,
+        "calls": 0,
+        "triangles": 0
+      },
+      "grass": 55656,
+      "leaves": 6120,
+      "flowers": 658,
+      "camera": [
+        10,
+        20,
+        22
+      ],
+      "resolution": [
+        540,
+        375
+      ]
+    },
+    "dense": {
+      "settings": {
+        "pixelSize": 2,
+        "renderScale": 0.75,
+        "colors": 4096,
+        "fog": 0.031,
+        "brightness": 1,
+        "saturation": 0.78,
+        "density": 65,
+        "pixelated": true,
+        "animated": false
+      },
+      "metrics": {
+        "fps": 0,
+        "frameMs": 0,
+        "calls": 0,
+        "triangles": 0
+      },
+      "grass": 55656,
+      "leaves": 6120,
+      "flowers": 658,
+      "camera": [
+        10,
+        20,
+        22
+      ],
+      "resolution": [
+        540,
+        375
+      ]
+    },
+    "unpixelated": {
+      "settings": {
+        "pixelSize": 2,
+        "renderScale": 0.75,
+        "colors": 4096,
+        "fog": 0.018,
+        "brightness": 1,
+        "saturation": 0.78,
+        "density": 65,
+        "pixelated": false,
+        "animated": false
+      },
+      "metrics": {
+        "fps": 0,
+        "frameMs": 271.6,
+        "calls": 41,
+        "triangles": 315544
+      },
+      "grass": 55656,
+      "leaves": 6120,
+      "flowers": 658,
+      "camera": [
+        10,
+        20,
+        22
+      ],
+      "resolution": [
+        720,
+        500
+      ]
+    }
+  },
+  "staticFrameIdentical": true,
+  "frames": {
+    "samples": 60,
+    "medianMs": 866.5999999999913,
+    "p95Ms": 1766.5,
+    "averageFps": 1.0952682585782323
+  },
+  "errors": []
+}

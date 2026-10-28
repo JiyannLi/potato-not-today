@@ -71,3 +71,41 @@ src/systems/state.ts      时间与暂停状态
 没有复杂 AI、抓取、投掷、计时、怨气、随机事件、关卡或联网。土豆 walk/run 通过角色模块测试，不会自主走动。碰撞简化为 AABB，装饰性花草、石板不阻挡，秋千不可互动。尚未实测 Safari、Firefox 或真实手机帧率。当前为轻微边线和低多边形风格，非完整手绘渲染。
 
 参考与许可证见 [REFERENCES.md](REFERENCES.md)。
+
+## V1.2 独立美术验证（Atmospheric 3D Pixel Art）
+
+启动同一个 `npm run dev` 后打开 **`/atmospheric.html`**。根入口 `/` 仍是原来的庭院，玩家、土豆、控制、碰撞和布局没有修改。本轮没有扩建正式庭院，也没有新增玩法。生产构建包含两个 HTML 入口。
+
+森林验证包含三棵带分枝/树皮纹理的树、六组叶卡灌木、带高度与覆盖变化的草叶、成簇白色野花、窄土路及原女性小厨师。全部是实时 Three.js WebGL2；截图不来自生成图片。
+
+右上调试面板可调整 Pixel Size、Color Quantization、Render Scale、Fog Density、Environment Brightness、Color Saturation、Grass Density；支持 Light / Medium / Dense 预设、关闭像素化、暂停风与角色待机、重置。触屏默认收起面板，点“渲染调试”展开。拖动画面可小幅平移相机；不加入森林玩法。
+
+- 像素管线：Three 官方 EffectComposer → 场景 → 饱和度 → OutputPass（ACES + sRGB）→ **RetroPass 1.3.0**。最终像素格采样来自同一个低分辨率画面，关闭 dithering、bloom 和随机噪声。
+- Pixel Size 是内部缓冲区像素格，最终 CSS 像素颗粒约等于 `Pixel Size / Render Scale`。默认 2 / 0.75 ≈ 2.67 CSS px；不随设备 DPR 变化。Color Quantization 是 RGB cube 的总色数上限（64～4096），有效单通道级数为其立方根取整。关闭像素化时同时绕过 RetroPass、恢复全 CSS 分辨率，仍保留相同饱和度和色调映射，便于对照。
+- 雾：原生 FogExp2，背景与雾同为 `#79836e`；轻/中/浓密度为 0.008 / 0.018 / 0.031。随相机空间距离累积，非整屏透明灰层。可继续调节；默认中雾由实拍筛选。
+- 稳定性：固定种子、无帧随机、静态纹理、世界空间低幅风、正交镜头在屏幕平面按像素网格对齐。静止截图重复性与动态平移需要分别检查；有意的风动画会改变草叶边缘，不承诺运动时完全无离散跳格。
+- 性能：约五万级三段草叶集中在一个 InstancedMesh，花、茎、树叶各一个实例绘制；合并树干与分枝。默认 0.75 Render Scale；一盏 1024 阴影灯，当前美术验证缓存静态阴影（角色小幅待机不会重算阴影）。正式移动场景需另行采用局部/低频更新。未实现动态 LOD，不把本次小场景成本直接等同扩建后的庭院。
+
+验证命令：
+
+```sh
+npm run typecheck
+npm test
+npm run build
+# 启动开发服务器后：
+node tests/art-browser.mjs  # 实景截图、控件、像素稳定性与帧时间采样
+node tests/browser.mjs     # 原庭院键盘/触屏回归
+```
+
+浏览器程序默认使用 `/usr/bin/chromium`，可通过 `CHROMIUM_PATH` 覆盖。美术烟测可通过 `ART_BASE_URL` 指定已启动服务（默认 http://127.0.0.1:5173）。实测与限制见 [美术验证报告](docs/art-v12/REPORT.md)，截图在同目录。实际复用、源码快照、适配修改及许可证见 [REFERENCES.md](REFERENCES.md)。本轮唯一新增运行时依赖是 RetroPass；没有引入 React、R3F、WebGPU、第二个后处理框架或外部资产服务。
+
+## GitHub Pages 部署
+
+项目使用相对资源路径，适配 `https://jiyannli.github.io/potato-not-today/`。首页仍是庭院，美术验证入口为 `atmospheric.html`，两页共享构建资源。
+
+```sh
+npm ci
+bash scripts/deploy-pages.sh
+```
+
+脚本运行生产构建，仅将 `dist/` 和 `.nojekyll` 发布到 `gh-pages` 分支，不强推。首次需在仓库 **Settings → Pages → Build and deployment** 中选择 **Deploy from a branch → gh-pages → / (root)** 并保存。GitHub 完成 Pages 构建后，网站才可访问；推送分支本身不表示网站已上线。
