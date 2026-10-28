@@ -1,5 +1,5 @@
 import * as T from 'three';
-import {shape} from '../world/model';
+import {shape,material} from '../world/model';
 export type Motion='idle'|'walk'|'run';
 export class Actor {
  readonly root=new T.Group();readonly body=new T.Group();readonly arms:T.Group[]=[];readonly legs:T.Group[]=[];
@@ -30,12 +30,14 @@ export class Actor {
  private potato(){
  const geo=new T.IcosahedronGeometry(1,2),p=geo.attributes.position;
  for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i);const n=1+.045*Math.sin(x*9+y*4)*Math.cos(z*7);p.setXYZ(i,x*n*.57,y*n*.68,z*n*.49);}geo.computeVertexNormals();
- const mesh=new T.Mesh(geo,new T.MeshStandardMaterial({color:'#d1aa66',roughness:1,flatShading:true}));mesh.position.y=1.05;mesh.castShadow=true;this.body.add(mesh);
+ const mesh=new T.Mesh(geo,new T.MeshStandardMaterial({color:'#d1aa66',roughness:1,flatShading:false}));mesh.position.y=1.05;mesh.castShadow=true;this.body.add(mesh);
  for(const x of [-.22,.22]){const leg=this.limb(this.legs,x,.54,'#95704a',.32,.055);shape(leg,'ball','#94704b',0,-.32,.07,.13,.075,.18);}
  for(const x of [-.54,.54]){const arm=this.limb(this.arms,x,1.15,'#aa7d4f',.35,.045);arm.rotation.z=x>0?.45:-.45;shape(arm,'ball','#aa7d4f',0,-.37,0,.09,.09,.08);}
  for(const x of [-.2,.2]){const eye=shape(this.face,'ball','#fff5dc',x,1.22,.437,.16,.19,.07);this.eyes.push(eye);shape(eye,'ball','#303b2c',.08,0,.84,.38,.5,.38);}
  shape(this.face,'ball','#674d37',0,.98,.49,.07,.09,.018);
- for(let i=0;i<20;i++){const a=i*2.399,y=.62+(i%6)*.16,r=Math.sqrt(Math.max(.1,1-((y-1.05)/.7)**2));shape(this.body,'ball','#b28d52',Math.sin(a)*.56*r,y,Math.cos(a)*.49*r,.025,.034,.015);}
+ const spots=new T.InstancedMesh(new T.IcosahedronGeometry(1,0),material('#b28d52'),20),spot=new T.Object3D();
+ for(let i=0;i<20;i++){const a=i*2.399,y=.62+(i%6)*.16,r=Math.sqrt(Math.max(.1,1-((y-1.05)/.7)**2));spot.position.set(Math.sin(a)*.56*r,y,Math.cos(a)*.49*r);spot.scale.set(.025,.034,.015);spot.updateMatrix();spots.setMatrixAt(i,spot.matrix);}
+ spots.receiveShadow=true;this.body.add(spots);
  shape(this.accessories,'cylinder','#708345',0,1.81,0,.025,.28,.025);for(const x of [-.14,.14]){const leaf=shape(this.accessories,'ball',x>0?'#94a854':'#778c43',x,1.94,0,.2,.065,.1);leaf.rotation.z=x>0?.4:-.4;}
  }
  update(dt:number,motion:Motion=this.motion){this.motion=motion;this.time+=dt;const t=this.time;const moving=motion!=='idle',run=motion==='run',phase=t*(run?15:9),amp=moving?(run?.8:.48):.025;for(let i=0;i<2;i++){this.legs[i].rotation.x=Math.sin(phase+i*Math.PI)*amp;this.arms[i].rotation.x=Math.sin(phase+(1-i)*Math.PI)*amp*.8;}

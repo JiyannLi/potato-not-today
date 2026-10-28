@@ -24,3 +24,7 @@
 | [SeedThree](https://github.com/SkyeShark/SeedThree) | 0.1.0-alpha；`cf2eaad39d9b7355ed086aca2a95fb785e539242` | README、`src/core/leaf-cards.js`, `src/core/impostor.js`：分枝、叶片卡和远景 billboard 思路。代码使用 `three/webgpu`、TSL 和 MeshSSSNodeMaterial，直接移植成本高；验证场景只需三棵树，采用原生 InstancedMesh + 原创 Canvas alpha 叶簇。 | 根代码许可 **MIT**；素材另有生成与音频来源说明，未将根许可等同于所有素材授权。**无代码/资源复制**，仅学习叶卡组织与 LOD 思路；当前未实现树木 LOD。 |
 
 Three.js r180 官方 `EffectComposer` / `RenderPass` / `OutputPass` / `ShaderPass` / `BufferGeometryUtils`（MIT）继续复用。`public/licenses/three-MIT.txt` 随构建输出。新场景的树叶、树皮、地面贴图均由 Canvas 程序生成，无网络贴图。植被视觉不同于上游鲜艳草地：调低背光，增加灰绿与橄榄色、成簇白花，使用同一距离雾；不宣称复用了未实际引入的上游系统。
+
+## V1.3 正式庭院推广
+
+沿用 V1.2 已记录的依赖版本、许可证和六个 MIT 草叶模块，没有引入新第三方库或模型。`createMeadow` / `createTrees` 增加可选参数，供平坦庭院与原实验室共享：尺寸、覆盖掩膜、草叶高度/段数、树木位置与叶卡数。实例化叶簇和 Canvas 地面/叶片/树皮/花纹理仍由本项目原创代码生成。正式场景使用三档密度与叶片数，并在重建时释放旧 GPU 资源。移动角色采用原创程序渐变接触阴影，缓存静态太阳阴影，未宣称复用了未接入的 LOD、WebGPU 或角色植被交互系统。

@@ -1,12 +1,27 @@
 import * as T from 'three';
+
+/** Fixed isometric orientation, smooth world tracking, then screen-plane pixel alignment. */
 export class FollowCamera {
- readonly target=new T.Vector3();private desired=new T.Vector3();
- constructor(readonly camera:T.PerspectiveCamera){camera.position.set(20,24,29);}
- update(player:T.Vector3,dt:number){
- // Limited tracking keeps camera outside roof volumes, always above the tallest object.
- this.desired.set(player.x*.24,0,player.z*.22);this.target.lerp(this.desired,1-Math.exp(-3*dt));
- const portrait=this.camera.aspect<.85, distance=portrait?1.85:1;
- this.camera.position.set(this.target.x+18*distance,23*distance,this.target.z+27*distance);
- this.desired.copy(this.target);this.desired.y=.1;this.camera.lookAt(this.desired);
+ readonly target=new T.Vector3();
+ private readonly desired=new T.Vector3();
+ private readonly snapped=new T.Vector3();
+ private readonly offset=new T.Vector3(16,23,24);
+ private readonly right=new T.Vector3(24,0,-16).normalize();
+ private readonly up=new T.Vector3().crossVectors(this.offset,this.right).normalize();
+ constructor(readonly camera:T.OrthographicCamera){}
+ resize(width:number,height:number){
+  const aspect=width/height,halfHeight=aspect<.85?11.5:9.5;
+  this.camera.left=-halfHeight*aspect;this.camera.right=halfHeight*aspect;
+  this.camera.top=halfHeight;this.camera.bottom=-halfHeight;
+  this.camera.updateProjectionMatrix();
+ }
+ update(player:T.Vector3,dt:number,gridWidth:number){
+  this.desired.set(player.x,.6,player.z-1.2);
+  this.target.lerp(this.desired,1-Math.exp(-4*dt));this.snapped.copy(this.target);
+  const unit=(this.camera.right-this.camera.left)/Math.max(1,gridWidth);
+  const x=this.target.dot(this.right),y=this.target.dot(this.up);
+  this.snapped.addScaledVector(this.right,Math.round(x/unit)*unit-x);
+  this.snapped.addScaledVector(this.up,Math.round(y/unit)*unit-y);
+  this.camera.position.copy(this.snapped).add(this.offset);this.camera.lookAt(this.snapped);
  }
 }
